@@ -21,17 +21,20 @@ jobs:
 
       - name: Create application-prod.properties
         run: |
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > application-prod.properties
-          echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> application-prod.properties
-          echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> application-prod.properties
-          echo "OSS_ACCESS_KEY=${{ secrets.OSS_ACCESS_KEY }}" >> application-prod.properties
-          echo "OSS_SECRET_KEY=${{ secrets.OSS_SECRET_KEY }}" >> application-prod.properties
-          echo "OSS_BUCKET=${{ secrets.OSS_BUCKET }}" >> application-prod.properties
-          echo "OSS_URL=${{ secrets.OSS_URL }}" >> application-prod.properties
-          echo "OSS_FOLDER=${{ secrets.OSS_FOLDER }}" >> application-prod.properties
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > ./src/main/resources/application-prod.properties
+          echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> ./src/main/resources/application-prod.properties
+          echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> ./src/main/resources/application-prod.properties
+          echo "OSS_ACCESS_KEY=${{ secrets.OSS_ACCESS_KEY }}" >> ./src/main/resources/application-prod.properties
+          echo "OSS_SECRET_KEY=${{ secrets.OSS_SECRET_KEY }}" >> ./src/main/resources/application-prod.properties
+          echo "OSS_BUCKET=${{ secrets.OSS_BUCKET }}" >> ./src/main/resources/application-prod.properties
+          echo "OSS_URL=${{ secrets.OSS_URL }}" >> ./src/main/resources/application-prod.properties
+          echo "OSS_FOLDER=${{ secrets.OSS_FOLDER }}" >> ./src/main/resources/application-prod.properties
+
+      - name: List properties
+        run: ls ./src/main/resources/
 
       - name: Print application-prod.properties
-        run: cat application-prod.properties
+        run: cat ./src/main/resources/application-prod.properties
 
       - name: Build with Maven
         run: mvn clean package -P prod
