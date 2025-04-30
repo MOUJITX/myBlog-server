@@ -19,17 +19,22 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Create application-prod.properties
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > application-prod.properties
+          echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> application-prod.properties
+          echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> application-prod.properties
+          echo "OSS_ACCESS_KEY=${{ secrets.OSS_ACCESS_KEY }}" >> application-prod.properties
+          echo "OSS_SECRET_KEY=${{ secrets.OSS_SECRET_KEY }}" >> application-prod.properties
+          echo "OSS_BUCKET=${{ secrets.OSS_BUCKET }}" >> application-prod.properties
+          echo "OSS_URL=${{ secrets.OSS_URL }}" >> application-prod.properties
+          echo "OSS_FOLDER=${{ secrets.OSS_FOLDER }}" >> application-prod.properties
+
+      - name: Print application-prod.properties
+        run: cat application-prod.properties
+
       - name: Build with Maven
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL}}
-          DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
-          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD}}
-          OSS_ACCESS_KEY: ${{ secrets.OSS_ACCESS_KEY}}
-          OSS_SECRET_KEY: ${{ secrets.OSS_SECRET_KEY}}
-          OSS_BUCKET: ${{ secrets.OSS_BUCKET}}
-          OSS_URL: ${{ secrets.OSS_URL}}
-          OSS_FOLDER: ${{secrets.OSS_FOLDER}}
-        run: mvn clean package
+        run: mvn clean package -P prod
 
       - name: Upload to server
         uses: wlixcc/SFTP-Deploy-Action@v1.0

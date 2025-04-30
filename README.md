@@ -8,21 +8,20 @@ mvn clean install
 
 ```bash
 # application-local.properties
-spring.datasource.url=${ DATABASE_URL }
-spring.datasource.username=${ DATABASE_USERNAME }
-spring.datasource.password=${ DATABASE_PASSWORD }
-oss.qiniu.accessKey=${ OSS_ACCESS_KEY }
-oss.qiniu.accessSecretKey=${ OSS_SECRET_KEY }
-oss.qiniu.bucket=${ OSS_BUCKET }
-oss.qiniu.imageUrl=${ OSS_URL }
-oss.qiniu.folder=${ OSS_FOLDER }
+DATABASE_URL=${DATABASE_URL}
+DATABASE_USERNAME=${DATABASE_USERNAME}
+DATABASE_PASSWORD=${DATABASE_PASSWORD}
+OSS_ACCESS_KEY=${OSS_ACCESS_KEY}
+OSS_SECRET_KEY=${OSS_SECRET_KEY}
+OSS_BUCKET=${OSS_BUCKET}
+OSS_URL=${OSS_URL}
+OSS_FOLDER=${OSS_FOLDER}
 ```
 
 ### run local
 
 ```bash
-export SPRING_PROFILES_ACTIVE=local
-mvn spring-boot:run
+mvn spring-boot:run -P local
 ```
 
 ### clean
@@ -34,5 +33,5 @@ mvn clean
 ### package
 
 ```bash
-mvn clean package
+mvn clean package -P prod
 ```
