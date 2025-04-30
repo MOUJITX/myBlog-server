@@ -21,7 +21,8 @@ OSS_FOLDER=${OSS_FOLDER}
 ### run local
 
 ```bash
-mvn spring-boot:run -P local
+export SPRING_PROFILES_ACTIVE=local
+mvn spring-boot:run
 ```
 
 ### clean
@@ -33,5 +34,5 @@ mvn clean
 ### package
 
 ```bash
-mvn clean package -P prod
+mvn clean package
 ```
