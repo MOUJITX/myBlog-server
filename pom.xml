@@ -10,7 +10,6 @@
     </parent>
     <groupId>com.moujitx.myblog</groupId>
     <artifactId>server</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <name>server</name>
     <description>server</description>
     <properties>
