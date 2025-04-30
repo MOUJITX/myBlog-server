@@ -1,6 +1,5 @@
 package com.moujitx.myblog.server.controller;
 
-
 import cn.hutool.json.JSONArray;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.moujitx.myblog.server.common.AuthAccess;
@@ -25,13 +24,13 @@ public class ArticleController {
     @Autowired
     ArticleService articleService;
 
-    /*新增数据*/
+    /* 新增数据 */
     @PostMapping("/add")
     public Result add(@RequestBody Article article) {
         list(article);
 
         String uuid = articleService.insert(article);
-        return Result.success("新增数据成功",uuid);
+        return Result.success("新增数据成功", uuid);
     }
 
     private void list(@RequestBody Article article) {
@@ -50,8 +49,7 @@ public class ArticleController {
         article.setCategories(new JSONArray(caategories_list));
     }
 
-
-    /*修改数据*/
+    /* 修改数据 */
     @PutMapping("/update")
     public Result update(@RequestBody Article article) {
         list(article);
@@ -60,29 +58,30 @@ public class ArticleController {
         return Result.success("更新数据成功");
     }
 
-    /*通过主键删除单条数据*/
+    /* 通过主键删除单条数据 */
     @DeleteMapping("/del/{uuid}")
     public Result delete(@PathVariable String uuid) {
         articleService.delete(uuid);
         return Result.success("删除数据成功");
     }
 
-    /*删除多条数据*/
+    /* 删除多条数据 */
     @DeleteMapping("/del/batch")
     public Result batchDelete(@RequestBody List<String> ids) {
-        if (ids.isEmpty()) return Result.error("待删除数据为空");
+        if (ids.isEmpty())
+            return Result.error("待删除数据为空");
         articleService.batchDelete(ids);
         return Result.success("删除数据成功");
     }
 
-    /*查询全部数据*/
+    /* 查询全部数据 */
     @GetMapping("/selectAll")
     public Result selectAll() {
         List<Article> list = articleService.selectAll();
         return Result.success(list);
     }
 
-    /*通过ID查询单条数据*/
+    /* 通过ID查询单条数据 */
     @AuthAccess
     @GetMapping("/selectById/{uuid}")
     public Result selectById(@PathVariable String uuid) {
@@ -91,19 +90,19 @@ public class ArticleController {
         return Result.success(article);
     }
 
-    /*多条件模糊查询*/
+    /* 多条件模糊查询 */
     @PostMapping("/select")
     public Result select(@RequestBody Article article) {
         List<Article> list = articleService.select(article);
         return Result.success(list);
     }
 
-    /*分页模糊多条件*/
+    /* 分页模糊多条件 */
     @PostMapping("/pageSelect")
     public Result pageSelect(HttpServletRequest request,
-                             @RequestParam(defaultValue = "1") Integer pageNum,
-                             @RequestParam(defaultValue = "10") Integer pageSize,
-                             @RequestBody Article article) {
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestBody Article article) {
         Page<Article> selectPage = articleService.selectPage(article, pageNum, pageSize);
         Map<String, Object> result = new HashMap<>();
         result.put("list", selectPage.getRecords());
@@ -117,8 +116,8 @@ public class ArticleController {
     @AuthAccess
     @PostMapping("/page")
     public Result page(@RequestParam(defaultValue = "1") Integer pageNum,
-                       @RequestParam(defaultValue = "10") Integer pageSize,
-                       @RequestBody Article article) {
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestBody Article article) {
         article.setIs_public(true);
         Page<Article> selectPage = articleService.page(article, pageNum, pageSize);
         selectPage.getRecords().forEach(item -> {

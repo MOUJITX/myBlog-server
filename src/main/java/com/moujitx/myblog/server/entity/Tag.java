@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "tag")
 @Data
-public class Tag extends Public{
+public class Tag extends Public {
 
     private String tag;
 
@@ -25,4 +25,3 @@ public class Tag extends Public{
     private Long tag_count;
 
 }
-

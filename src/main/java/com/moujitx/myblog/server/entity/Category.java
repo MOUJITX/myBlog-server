@@ -15,7 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "category")
 @Data
-public class Category extends Public{
+public class Category extends Public {
 
     private String category;
 
@@ -32,4 +32,3 @@ public class Category extends Public{
     private Boolean hasChildren;
 
 }
-

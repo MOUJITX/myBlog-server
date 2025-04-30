@@ -35,4 +35,3 @@ public class Resumesection extends Public {
     @TableField(exist = false)
     private List<Resume> resumes;
 }
-

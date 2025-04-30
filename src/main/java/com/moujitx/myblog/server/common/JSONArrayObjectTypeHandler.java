@@ -30,6 +30,7 @@ public class JSONArrayObjectTypeHandler extends BaseTypeHandler<JSONArray> {
 
     /**
      * 重写设置参数
+     * 
      * @param ps
      * @param i
      * @param parameter
@@ -37,12 +38,14 @@ public class JSONArrayObjectTypeHandler extends BaseTypeHandler<JSONArray> {
      * @throws SQLException
      */
     @Override
-    public void setNonNullParameter(PreparedStatement ps, int i, JSONArray parameter, JdbcType jdbcType) throws SQLException {
+    public void setNonNullParameter(PreparedStatement ps, int i, JSONArray parameter, JdbcType jdbcType)
+            throws SQLException {
         ps.setString(i, String.valueOf(parameter.toString()));
     }
 
     /**
      * 根据列名，获取可以为空的结果
+     * 
      * @param rs
      * @param columnName
      * @return
@@ -51,7 +54,7 @@ public class JSONArrayObjectTypeHandler extends BaseTypeHandler<JSONArray> {
     @Override
     public JSONArray getNullableResult(ResultSet rs, String columnName) throws SQLException {
         String sqlJson = rs.getString(columnName);
-        if (null != sqlJson){
+        if (null != sqlJson) {
             return JSONUtil.parseArray(sqlJson);
         }
         return new JSONArray();
@@ -59,6 +62,7 @@ public class JSONArrayObjectTypeHandler extends BaseTypeHandler<JSONArray> {
 
     /**
      * 根据列索引，获取可以为空的结果
+     * 
      * @param rs
      * @param columnIndex
      * @return
@@ -67,7 +71,7 @@ public class JSONArrayObjectTypeHandler extends BaseTypeHandler<JSONArray> {
     @Override
     public JSONArray getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         String sqlJson = rs.getString(columnIndex);
-        if (null != sqlJson){
+        if (null != sqlJson) {
             return JSONUtil.parseArray(sqlJson);
         }
         return new JSONArray();
@@ -76,7 +80,7 @@ public class JSONArrayObjectTypeHandler extends BaseTypeHandler<JSONArray> {
     @Override
     public JSONArray getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         String sqlJson = cs.getString(columnIndex);
-        if (null != sqlJson){
+        if (null != sqlJson) {
             return JSONUtil.parseArray(sqlJson);
         }
         return new JSONArray();

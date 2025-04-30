@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName("files")
 @Data
-public class Files extends Public{
+public class Files extends Public {
 
     private String file_name;
 
@@ -25,7 +25,7 @@ public class Files extends Public{
 
     private String source_url;
 
-    @TableField(updateStrategy = FieldStrategy.NEVER,insertStrategy = FieldStrategy.NEVER)   //虚拟列，不对该字段做任何插入/修改操作
+    @TableField(updateStrategy = FieldStrategy.NEVER, insertStrategy = FieldStrategy.NEVER) // 虚拟列，不对该字段做任何插入/修改操作
     private String download_url;
 
 }

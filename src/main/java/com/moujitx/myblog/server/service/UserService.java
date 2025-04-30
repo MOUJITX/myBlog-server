@@ -98,7 +98,7 @@ public class UserService {
         return userMapper.selectOne(queryWrapper);
     }
 
-    public User selectByUsernameAndPassword(String username, String password){
+    public User selectByUsernameAndPassword(String username, String password) {
         MPJLambdaWrapper<User> queryWrapper = new MPJLambdaWrapper<>();
         queryWrapper.eq("username", username)
                 .eq("password", password);

@@ -37,7 +37,6 @@ public class WebsiteService {
         return websiteMapper.selectList(wrapper);
     }
 
-
     /**
      * 多条件查询
      */
@@ -47,7 +46,6 @@ public class WebsiteService {
 
         return websiteMapper.selectList(wrapper);
     }
-
 
     /**
      * 唯一值查询

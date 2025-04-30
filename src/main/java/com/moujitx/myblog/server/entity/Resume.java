@@ -51,4 +51,3 @@ public class Resume extends Public {
     @OrderBy(sort = 2, asc = true)
     private Integer section_order;
 }
-

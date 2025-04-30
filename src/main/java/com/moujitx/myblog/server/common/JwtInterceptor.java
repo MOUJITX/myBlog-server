@@ -21,28 +21,27 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 public class JwtInterceptor implements HandlerInterceptor {
 
-
     @SuppressWarnings("null")
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        //跳过拦截器
-        if (handler instanceof HandlerMethod){
+        // 跳过拦截器
+        if (handler instanceof HandlerMethod) {
             AuthAccess annotation = ((HandlerMethod) handler).getMethodAnnotation(AuthAccess.class);
-            if (annotation != null){
+            if (annotation != null) {
                 return true;
             }
         }
 
-        String token = request.getHeader("token");  //header中
+        String token = request.getHeader("token"); // header中
         if (StrUtil.isBlank(token)) {
-            token = request.getParameter("token");  //url中 ?token=***
+            token = request.getParameter("token"); // url中 ?token=***
         }
 
         if (StrUtil.isBlank(token)) {
             throw new ServiceException(401, "TOKEN为空");
         }
 
-        if (TokenUtils.verifyToken(token)){
+        if (TokenUtils.verifyToken(token)) {
             return true;
         } else {
             throw new ServiceException(401, "TOKEN验证错误");

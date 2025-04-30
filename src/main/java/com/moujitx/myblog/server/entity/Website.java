@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "website")
 @Data
-public class Website extends Public{
+public class Website extends Public {
 
     private String name;
 

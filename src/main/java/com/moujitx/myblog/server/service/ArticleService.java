@@ -58,7 +58,7 @@ public class ArticleService {
      */
     public List<Article> selectAll() {
         MPJLambdaWrapper<Article> wrapper = new MPJLambdaWrapper<Article>()
-                .select(Article::getUuid,Article::getTags,Article::getCreate_time);
+                .select(Article::getUuid, Article::getTags, Article::getCreate_time);
         return articleMapper.selectList(wrapper);
     }
 
@@ -99,7 +99,7 @@ public class ArticleService {
                         Article::getIs_comment,
                         Article::getIs_link,
                         Article::getIs_private)
-                .like(!article.getCategories().isEmpty(),Article::getCategories, article.getCategories().get(0));
+                .like(!article.getCategories().isEmpty(), Article::getCategories, article.getCategories().get(0));
 
         return articleMapper.selectPage(new Page<>(pageNum, pageSize, true), wrapper);
     }
@@ -123,13 +123,13 @@ public class ArticleService {
                         Article::getIs_private,
                         Article::getSource_url)
                 .eq(Article::getIs_public, article.getIs_public())
-                .like(!article.getCategories().isEmpty(),Article::getCategories, article.getCategories().get(0))
-                .like(!article.getTags().isEmpty(),Article::getTags, article.getTags().get(0));
+                .like(!article.getCategories().isEmpty(), Article::getCategories, article.getCategories().get(0))
+                .like(!article.getTags().isEmpty(), Article::getTags, article.getTags().get(0));
 
         return articleMapper.selectPage(new Page<>(pageNum, pageSize, true), wrapper);
     }
 
-    public List<Article> selectByCategoryUUID(String uuid){
+    public List<Article> selectByCategoryUUID(String uuid) {
         MPJLambdaWrapper<Article> wrapper = new MPJLambdaWrapper<Article>()
                 .selectAll(Article.class)
                 .like(Article::getCategories, uuid);
@@ -137,31 +137,31 @@ public class ArticleService {
         return articleMapper.selectList(wrapper);
     }
 
-    public Article setCategoriesAndTagsName(Article article){
-        if (!article.getTags().isEmpty()){
+    public Article setCategoriesAndTagsName(Article article) {
+        if (!article.getTags().isEmpty()) {
             String tagsName = articleMapper.getTagsName(
                     article.getTags().toString()
                             .replace("[", "")
                             .replace("]", "")
                             .replace("\"", ""));
-//            System.out.println(tagsName);
+            // System.out.println(tagsName);
             if (StrUtil.isNotBlank(tagsName))
                 article.setTags_name(JSONUtil.parseArray("[" + tagsName + "]"));
         }
-        if (!article.getCategories().isEmpty()){
+        if (!article.getCategories().isEmpty()) {
             String categoriesName = articleMapper.getCategoriesName(
                     article.getCategories().toString()
                             .replace("[", "")
                             .replace("]", "")
                             .replace("\"", ""));
-//            System.out.println(categoriesName);
+            // System.out.println(categoriesName);
             if (StrUtil.isNotBlank(categoriesName))
                 article.setCategories_name(JSONUtil.parseArray("[" + categoriesName + "]"));
         }
         return article;
     }
 
-    public Long countByTag(String tagUUID){
+    public Long countByTag(String tagUUID) {
         MPJLambdaWrapper<Article> wrapper = new MPJLambdaWrapper<Article>();
         wrapper.like("tags", tagUUID);
         return articleMapper.selectCount(wrapper);

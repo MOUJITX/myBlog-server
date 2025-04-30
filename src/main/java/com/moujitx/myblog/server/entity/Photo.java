@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "photo")
 @Data
-public class Photo extends Public{
+public class Photo extends Public {
 
     private String title;
 
@@ -28,4 +28,3 @@ public class Photo extends Public{
     private Boolean is_public;
 
 }
-

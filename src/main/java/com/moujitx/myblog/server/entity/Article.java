@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "article")
 @Data
-public class Article extends Public{
+public class Article extends Public {
 
     private String title;
 
@@ -32,13 +32,13 @@ public class Article extends Public{
     @TableField(typeHandler = JSONArrayObjectTypeHandler.class)
     private JSONArray tags;
 
-    @TableField(typeHandler = JSONArrayObjectTypeHandler.class,exist = false)
+    @TableField(typeHandler = JSONArrayObjectTypeHandler.class, exist = false)
     private JSONArray tags_name;
 
     @TableField(typeHandler = JSONArrayObjectTypeHandler.class)
     private JSONArray categories;
 
-    @TableField(typeHandler = JSONArrayObjectTypeHandler.class,exist = false)
+    @TableField(typeHandler = JSONArrayObjectTypeHandler.class, exist = false)
     private JSONArray categories_name;
 
     @OrderBy(sort = 1)
@@ -56,7 +56,4 @@ public class Article extends Public{
 
     private String view_code;
 
-
-
 }
-

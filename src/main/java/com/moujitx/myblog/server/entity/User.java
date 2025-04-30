@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "user")
 @Data
-public class User extends Public{
+public class User extends Public {
 
     private String username;
 

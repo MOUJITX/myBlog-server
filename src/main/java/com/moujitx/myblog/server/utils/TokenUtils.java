@@ -18,10 +18,10 @@ public class TokenUtils {
                     .setPayload("uuid", uuid)
                     .setPayload(JWTPayload.ISSUED_AT, DateTime.now())
                     .setPayload(JWTPayload.NOT_BEFORE, DateTime.now())
-                    .setPayload(JWTPayload.EXPIRES_AT,DateTime.now().offsetNew(DateField.MINUTE, EXPIRE_TIME_MINUTE))
+                    .setPayload(JWTPayload.EXPIRES_AT, DateTime.now().offsetNew(DateField.MINUTE, EXPIRE_TIME_MINUTE))
                     .setKey(KEY.getBytes())
                     .sign();
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ServiceException("TOKEN生成失败");
         }
     }
@@ -29,17 +29,16 @@ public class TokenUtils {
     public static String getUUID(String token) {
         try {
             return JWT.of(token).getPayload("uuid").toString();
-        } catch (Exception e){
-            throw new ServiceException(401,"TOKEN解析失败");
+        } catch (Exception e) {
+            throw new ServiceException(401, "TOKEN解析失败");
         }
     }
 
     public static Boolean verifyToken(String token) {
         try {
             return JWT.of(token).setKey(KEY.getBytes()).validate(0);
-        } catch (Exception e){
-            throw new ServiceException(401,"TOKEN验证失败");
+        } catch (Exception e) {
+            throw new ServiceException(401, "TOKEN验证失败");
         }
     }
 }
-

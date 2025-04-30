@@ -16,16 +16,16 @@ import java.util.UUID;
 
 public class GlobalSet {
 
-    //服务器地址
+    // 服务器地址
     @Getter
     private final String hostURL = "http://127.0.0.1:8080/";
 
-    ApplicationHome ah = new ApplicationHome(SpringBootApplication.class);  //获取jar存储位置
+    ApplicationHome ah = new ApplicationHome(SpringBootApplication.class); // 获取jar存储位置
 
     @Getter
-    //private String docStorePath = ah.getSource().getParentFile().toString();  //获取相对于jar存储位置的上级目录（服务器部署后）
-    private final String docStorePath = System.getProperty("user.dir");   //获取文件存储目录（本地测试）
-
+    // private String docStorePath = ah.getSource().getParentFile().toString();
+    // //获取相对于jar存储位置的上级目录（服务器部署后）
+    private final String docStorePath = System.getProperty("user.dir"); // 获取文件存储目录（本地测试）
 
     @Getter
     private final String exportName = docStorePath + "/files/export";

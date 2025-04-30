@@ -58,9 +58,9 @@ public class ResumeService {
     public List<Resume> selectAll() {
         MPJLambdaWrapper<Resume> wrapper = new MPJLambdaWrapper<Resume>()
                 .selectAll(Resume.class)
-                .selectAs(Resumesection::getSection,"section_name")
-                .selectAs(Resumesection::getEnabled,"section_enabled")
-                .selectAs(Resumesection::getOrdernum,"section_order")
+                .selectAs(Resumesection::getSection, "section_name")
+                .selectAs(Resumesection::getEnabled, "section_enabled")
+                .selectAs(Resumesection::getOrdernum, "section_order")
                 .leftJoin(Resumesection.class, Resumesection::getUuid, Resume::getSection);
         return resumeMapper.selectList(wrapper);
     }
@@ -71,9 +71,9 @@ public class ResumeService {
     public Resume selectById(String uuid) {
         MPJLambdaWrapper<Resume> wrapper = new MPJLambdaWrapper<Resume>()
                 .selectAll(Resume.class)
-                .selectAs(Resumesection::getSection,"section_name")
-                .selectAs(Resumesection::getEnabled,"section_enabled")
-                .selectAs(Resumesection::getOrdernum,"section_order")
+                .selectAs(Resumesection::getSection, "section_name")
+                .selectAs(Resumesection::getEnabled, "section_enabled")
+                .selectAs(Resumesection::getOrdernum, "section_order")
                 .leftJoin(Resumesection.class, Resumesection::getUuid, Resume::getSection)
                 .eq(Resume::getUuid, uuid);
         return resumeMapper.selectOne(wrapper);
@@ -85,9 +85,9 @@ public class ResumeService {
     public List<Resume> select(Resume resume) {
         MPJLambdaWrapper<Resume> wrapper = new MPJLambdaWrapper<Resume>()
                 .selectAll(Resume.class)
-                .selectAs(Resumesection::getSection,"section_name")
-                .selectAs(Resumesection::getEnabled,"section_enabled")
-                .selectAs(Resumesection::getOrdernum,"section_order")
+                .selectAs(Resumesection::getSection, "section_name")
+                .selectAs(Resumesection::getEnabled, "section_enabled")
+                .selectAs(Resumesection::getOrdernum, "section_order")
                 .leftJoin(Resumesection.class, Resumesection::getUuid, Resume::getSection);
 
         return resumeMapper.selectList(wrapper);
@@ -99,11 +99,11 @@ public class ResumeService {
     public Page<Resume> selectPage(Resume resume, Integer pageNum, Integer pageSize) {
         MPJLambdaWrapper<Resume> wrapper = new MPJLambdaWrapper<Resume>()
                 .selectAll(Resume.class)
-                .selectAs(Resumesection::getSection,"section_name")
-                .selectAs(Resumesection::getEnabled,"section_enabled")
-                .selectAs(Resumesection::getOrdernum,"section_order")
+                .selectAs(Resumesection::getSection, "section_name")
+                .selectAs(Resumesection::getEnabled, "section_enabled")
+                .selectAs(Resumesection::getOrdernum, "section_order")
                 .leftJoin(Resumesection.class, Resumesection::getUuid, Resume::getSection)
-                .eq(StrUtil.isNotBlank(resume.getSection()),Resume::getSection, resume.getSection());
+                .eq(StrUtil.isNotBlank(resume.getSection()), Resume::getSection, resume.getSection());
 
         return resumeMapper.selectPage(new Page<>(pageNum, pageSize, true), wrapper);
     }

@@ -31,7 +31,7 @@ public class JSONObjectTypeHandler implements TypeHandler<JSONObject> {
 
     @Override
     public void setParameter(PreparedStatement ps, int i, JSONObject parameter,
-                             JdbcType jdbcType) throws SQLException {
+            JdbcType jdbcType) throws SQLException {
         String value = parameter.toString();
         if (jdbcType == null) {
             ps.setObject(i, value);
@@ -40,20 +40,17 @@ public class JSONObjectTypeHandler implements TypeHandler<JSONObject> {
         }
     }
 
-
     @Override
     public JSONObject getResult(ResultSet rs, String columnName) throws SQLException {
         String result = rs.getString(columnName);
         return result == null ? null : JSONUtil.parseObj(result);
     }
 
-
     @Override
     public JSONObject getResult(ResultSet rs, int columnIndex) throws SQLException {
         String result = rs.getString(columnIndex);
         return result == null ? null : JSONUtil.parseObj(result);
     }
-
 
     @Override
     public JSONObject getResult(CallableStatement cs, int columnIndex) throws SQLException {

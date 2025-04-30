@@ -17,7 +17,7 @@ public class InterceptorConfig extends WebMvcConfigurationSupport {
     @Override
     protected void addInterceptors(@SuppressWarnings("null") InterceptorRegistry registry) {
         registry.addInterceptor(jwtInterceptor())
-                .addPathPatterns("/**");  //拦截所有路径
+                .addPathPatterns("/**"); // 拦截所有路径
         super.addInterceptors(registry);
     }
 
