@@ -123,6 +123,7 @@ public class ArticleService {
                         Article::getIs_private,
                         Article::getSource_url)
                 .eq(Article::getIs_public, article.getIs_public())
+                .like(!article.getTitle().isEmpty(), Article::getTitle, article.getTitle())
                 .like(!article.getCategories().isEmpty(), Article::getCategories, article.getCategories().get(0))
                 .like(!article.getTags().isEmpty(), Article::getTags, article.getTags().get(0));
 
