@@ -23,6 +23,8 @@ public class WebsiteController {
 
     @Autowired
     WebsiteService websiteService;
+    @Autowired
+    VisitorController visitorController;
 
     /* 修改数据 */
     @PutMapping("/update")
@@ -34,9 +36,11 @@ public class WebsiteController {
     @AuthAccess
     @GetMapping("/")
     public Result load(HttpServletRequest request) {
-//        req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-        System.out.println("request:" + request.getHeader("X-Forwarded-For"));
-        System.out.println("request:" + request.getRemoteAddr());
+        String ipv4 = request.getHeader("X-Forwarded-For");
+        String agent = request.getHeader("User-Agent");
+        String token = request.getHeader("token");
+        visitorController.insert(ipv4, agent, token);
+
         List<Website> list = websiteService.selectAll();
         Map<String, JSONObject> result = new HashMap<>();
         list.forEach(item -> result.put(item.getName(), item.getValue()));

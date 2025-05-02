@@ -21,6 +21,8 @@ public class Files extends Public {
 
     private long size;
 
+    private String upload_ip;
+
     private String user_agent;
 
     private String source_url;

@@ -1,13 +1,9 @@
 package com.moujitx.myblog.server.controller;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.moujitx.myblog.server.common.AuthAccess;
-import com.moujitx.myblog.server.common.GlobalSet;
 import com.moujitx.myblog.server.common.Result;
 import com.moujitx.myblog.server.entity.Files;
-import com.moujitx.myblog.server.exception.ServiceException;
 import com.moujitx.myblog.server.service.FilesService;
 import com.moujitx.myblog.server.utils.OSSUploadUtils;
 import com.qiniu.http.Response;
@@ -17,11 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.*;
 
 @RestController
@@ -33,144 +24,147 @@ public class FilesController {
 
     // 图片上传专用(停用)
     @SuppressWarnings("null")
-    @PostMapping("/old/upload/image")
-    public Result UploadImg(MultipartFile file, HttpServletRequest request) {
-        String userAgent = request.getHeader("User-Agent");
-        String name = file.getOriginalFilename().concat("");
-        String originName = "";
-        String endName = "";
-        try {
-            originName = name.substring(0, name.lastIndexOf("."));
-            endName = name.substring(name.lastIndexOf("."));
-        } catch (StringIndexOutOfBoundsException e) {
-            originName = name;
-            endName = "." + file.getContentType().split("/")[1];
-        }
-        String type = file.getContentType();
-        long size = file.getSize();
-
-        assert type != null;
-        if (!type.startsWith("image"))
-            return Result.error("上传失败，只允许上传图片格式");
-
-        Files files = new Files();
-        files.setFile_name(originName);
-        files.setOriginal_name(originName);
-        files.setEnd_name(endName);
-        files.setType(type);
-        files.setUser_agent(userAgent);
-        files.setSize(size);
-        String uuid = filesService.insert(files);
-
-        GlobalSet globalSet = new GlobalSet();
-        File folder = new File(globalSet.getUploadPath());
-        if (!folder.exists())
-            folder.mkdirs();
-        try {
-            file.transferTo(new File(folder, uuid + endName));
-        } catch (Exception e) {
-            filesService.delete(uuid);
-            return Result.errorWithTitle("上传失败", e.getMessage());
-        }
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("url", "/api/files/download/" + uuid + endName);
-        map.put("name", originName);
-        map.put("uuid", uuid);
-        return Result.success("文件上传成功", map);
-    }
+//    @PostMapping("/old/upload/image")
+//    public Result UploadImg(MultipartFile file, HttpServletRequest request) {
+//        String userAgent = request.getHeader("User-Agent");
+//        String uploadIP = request.getHeader("X-Forwarded-For");
+//        String name = file.getOriginalFilename().concat("");
+//        String originName = "";
+//        String endName = "";
+//        try {
+//            originName = name.substring(0, name.lastIndexOf("."));
+//            endName = name.substring(name.lastIndexOf("."));
+//        } catch (StringIndexOutOfBoundsException e) {
+//            originName = name;
+//            endName = "." + file.getContentType().split("/")[1];
+//        }
+//        String type = file.getContentType();
+//        long size = file.getSize();
+//
+//        assert type != null;
+//        if (!type.startsWith("image"))
+//            return Result.error("上传失败，只允许上传图片格式");
+//
+//        Files files = new Files();
+//        files.setFile_name(originName);
+//        files.setOriginal_name(originName);
+//        files.setEnd_name(endName);
+//        files.setType(type);
+//        files.setUser_agent(userAgent);
+//        files.setUpload_ip(uploadIP);
+//        files.setSize(size);
+//        String uuid = filesService.insert(files);
+//
+//        GlobalSet globalSet = new GlobalSet();
+//        File folder = new File(globalSet.getUploadPath());
+//        if (!folder.exists())
+//            folder.mkdirs();
+//        try {
+//            file.transferTo(new File(folder, uuid + endName));
+//        } catch (Exception e) {
+//            filesService.delete(uuid);
+//            return Result.errorWithTitle("上传失败", e.getMessage());
+//        }
+//
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("url", "/api/files/download/" + uuid + endName);
+//        map.put("name", originName);
+//        map.put("uuid", uuid);
+//        return Result.success("文件上传成功", map);
+//    }
 
     // 获取URL图片（停用）
-    @AuthAccess
-    @GetMapping("/old/upload/imageURL")
-    public Result UploadImgByURL(@RequestParam String url, HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        URL requestURL = new URL(url);
-        HttpURLConnection connection = (HttpURLConnection) requestURL.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setConnectTimeout(10 * 1000);
-        InputStream stream = connection.getInputStream();
-        int len = 0;
-        byte[] test = new byte[1024];
-
-        String name = url.substring(url.lastIndexOf("/") + 1);
-        String originName = "";
-        String endName = "";
-        try {
-            originName = name.substring(0, name.lastIndexOf("."));
-            endName = name.substring(name.lastIndexOf("."));
-        } catch (StringIndexOutOfBoundsException e) {
-            originName = name;
-            endName = ".jpg";
-        }
-        Files files = new Files();
-        files.setUser_agent(request.getHeader("User-Agent"));
-        files.setOriginal_name(originName);
-        files.setFile_name(originName);
-        files.setEnd_name(endName);
-        files.setSource_url(url);
-        if (endName.equals(".jpg") || endName.equals(".jpeg"))
-            files.setType("image/jpeg");
-        else
-            files.setType("image/" + endName.replace(".", ""));
-        String uuid = filesService.insert(files);
-
-        GlobalSet globalSet = new GlobalSet();
-        String realPath = globalSet.getUploadPath();
-        File folder = new File(realPath);
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
-
-        // 输出流，图片输出的目的文件
-        BufferedOutputStream fos = new BufferedOutputStream(new FileOutputStream(realPath + uuid + endName));
-
-        // 以流的方式上传
-        while ((len = stream.read(test)) != -1) {
-            fos.write(test, 0, len);
-        }
-
-        // 记得关闭流，不然消耗资源
-        stream.close();
-        fos.close();
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("url", "/api/files/download/" + uuid + endName);
-        map.put("name", uuid);
-        return Result.success("文件上传成功", map);
-    }
+//    @AuthAccess
+//    @GetMapping("/old/upload/imageURL")
+//    public Result UploadImgByURL(@RequestParam String url, HttpServletRequest request, HttpServletResponse response)
+//            throws IOException {
+//        URL requestURL = new URL(url);
+//        HttpURLConnection connection = (HttpURLConnection) requestURL.openConnection();
+//        connection.setRequestMethod("GET");
+//        connection.setConnectTimeout(10 * 1000);
+//        InputStream stream = connection.getInputStream();
+//        int len = 0;
+//        byte[] test = new byte[1024];
+//
+//        String name = url.substring(url.lastIndexOf("/") + 1);
+//        String originName = "";
+//        String endName = "";
+//        try {
+//            originName = name.substring(0, name.lastIndexOf("."));
+//            endName = name.substring(name.lastIndexOf("."));
+//        } catch (StringIndexOutOfBoundsException e) {
+//            originName = name;
+//            endName = ".jpg";
+//        }
+//        Files files = new Files();
+//        files.setUser_agent(request.getHeader("User-Agent"));
+//        files.setUpload_ip(request.getHeader("X-Forwarded-For"));
+//        files.setOriginal_name(originName);
+//        files.setFile_name(originName);
+//        files.setEnd_name(endName);
+//        files.setSource_url(url);
+//        if (endName.equals(".jpg") || endName.equals(".jpeg"))
+//            files.setType("image/jpeg");
+//        else
+//            files.setType("image/" + endName.replace(".", ""));
+//        String uuid = filesService.insert(files);
+//
+//        GlobalSet globalSet = new GlobalSet();
+//        String realPath = globalSet.getUploadPath();
+//        File folder = new File(realPath);
+//        if (!folder.exists()) {
+//            folder.mkdirs();
+//        }
+//
+//        // 输出流，图片输出的目的文件
+//        BufferedOutputStream fos = new BufferedOutputStream(new FileOutputStream(realPath + uuid + endName));
+//
+//        // 以流的方式上传
+//        while ((len = stream.read(test)) != -1) {
+//            fos.write(test, 0, len);
+//        }
+//
+//        // 记得关闭流，不然消耗资源
+//        stream.close();
+//        fos.close();
+//
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("url", "/api/files/download/" + uuid + endName);
+//        map.put("name", uuid);
+//        return Result.success("文件上传成功", map);
+//    }
 
     // 下载文件（暂时弃用，后续可能对接七牛云）
-    @AuthAccess
-    @GetMapping("/download/{fileName}")
-    public void getFiles(@PathVariable String fileName, HttpServletResponse response) {
-        OutputStream os; // 新建一个输出流对象
-        GlobalSet globalSet = new GlobalSet();
-        String filePath = globalSet.getUploadPath() + fileName;
-        try {
-            if (StrUtil.isNotBlank(fileName)) {
-                Files files = filesService.selectById(fileName.split("\\.")[0]);
-                byte[] bytes = FileUtil.readBytes(globalSet.getPublicFilePath() + "404.png");
-                if (files == null) {
-                    response.addHeader("Content-Disposition", "inline;filename=404.png");
-                    response.setContentType("image/png");
-                } else {
-                    response.addHeader("Content-Disposition", "inline;filename="
-                            + URLEncoder.encode(files.getFile_name() + files.getEnd_name(), "UTF-8"));
-                    response.setContentType(files.getType());
-                }
-                File file = new File(globalSet.getUploadPath(), fileName);
-                if (files != null && file.exists())
-                    bytes = FileUtil.readBytes(filePath);
-                os = response.getOutputStream(); // 通过输出流返回文件
-                os.write(bytes);
-                os.flush();
-                os.close();
-            }
-        } catch (Exception e) {
-            throw new ServiceException(e.getMessage());
-        }
-    }
+//    @AuthAccess
+//    @GetMapping("/download/{fileName}")
+//    public void getFiles(@PathVariable String fileName, HttpServletResponse response) {
+//        OutputStream os; // 新建一个输出流对象
+//        GlobalSet globalSet = new GlobalSet();
+//        String filePath = globalSet.getUploadPath() + fileName;
+//        try {
+//            if (StrUtil.isNotBlank(fileName)) {
+//                Files files = filesService.selectById(fileName.split("\\.")[0]);
+//                byte[] bytes = FileUtil.readBytes(globalSet.getPublicFilePath() + "404.png");
+//                if (files == null) {
+//                    response.addHeader("Content-Disposition", "inline;filename=404.png");
+//                    response.setContentType("image/png");
+//                } else {
+//                    response.addHeader("Content-Disposition", "inline;filename="
+//                            + URLEncoder.encode(files.getFile_name() + files.getEnd_name(), "UTF-8"));
+//                    response.setContentType(files.getType());
+//                }
+//                File file = new File(globalSet.getUploadPath(), fileName);
+//                if (files != null && file.exists())
+//                    bytes = FileUtil.readBytes(filePath);
+//                os = response.getOutputStream(); // 通过输出流返回文件
+//                os.write(bytes);
+//                os.flush();
+//                os.close();
+//            }
+//        } catch (Exception e) {
+//            throw new ServiceException(e.getMessage());
+//        }
+//    }
 
     @PostMapping("/pageSelect")
     public Result pageSelect(HttpServletRequest request,
@@ -251,7 +245,8 @@ public class FilesController {
 
         String originName = file.getOriginalFilename();
         String userAgent = request.getHeader("User-Agent");
-        String uuid = saveToDB(fetchRet, originName, filename, userAgent, null);
+        String uploadIP = request.getHeader("X-Forwarded-For");
+        String uuid = saveToDB(fetchRet, originName, filename, userAgent, uploadIP,null);
 
         Map<String, Object> map = new HashMap<>();
         map.put("url", "/files/" + filename);
@@ -283,7 +278,8 @@ public class FilesController {
 
         String originName = url.substring(url.lastIndexOf("/") + 1);
         String userAgent = request.getHeader("User-Agent");
-        String uuid = saveToDB(fetchRet, originName, filename, userAgent, url);
+        String uploadIP = request.getHeader("X-Forwarded-For");
+        String uuid = saveToDB(fetchRet, originName, filename, userAgent, uploadIP, url);
 
         Map<String, Object> map = new HashMap<>();
         map.put("url", "/files/" + filename);
@@ -297,6 +293,7 @@ public class FilesController {
             String originFileName,
             String filename,
             String userAgent,
+            String uploadIP,
             String sourceURL) {
         String uuid = filename.substring(0, filename.lastIndexOf("."));
         String endName = filename.substring(filename.lastIndexOf("."));
@@ -307,7 +304,6 @@ public class FilesController {
             originName = originFileName;
         else
             originName = originFileName.substring(0, originFileName.lastIndexOf("."));
-
         Files files = new Files();
         files.setUuid(uuid);
         files.setFile_name(originName);
@@ -316,6 +312,7 @@ public class FilesController {
         files.setType(fetchRet.mimeType);
         files.setSize(fetchRet.fsize);
         files.setUser_agent(userAgent);
+        files.setUpload_ip(uploadIP);
         files.setSource_url(sourceURL);
         return filesService.insert(files);
     }
