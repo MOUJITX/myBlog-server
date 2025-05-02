@@ -7,6 +7,8 @@ import com.moujitx.myblog.server.entity.Website;
 import com.moujitx.myblog.server.service.WebsiteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -31,12 +33,13 @@ public class WebsiteController {
 
     @AuthAccess
     @GetMapping("/")
-    public Result load() {
+    public Result load(HttpServletRequest request) {
+//        req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+        System.out.println("request:" + request.getHeader("X-Forwarded-For"));
+        System.out.println("request:" + request.getRemoteAddr());
         List<Website> list = websiteService.selectAll();
         Map<String, JSONObject> result = new HashMap<>();
-        list.forEach(item -> {
-            result.put(item.getName(), item.getValue());
-        });
+        list.forEach(item -> result.put(item.getName(), item.getValue()));
         return Result.success(result);
     }
 
