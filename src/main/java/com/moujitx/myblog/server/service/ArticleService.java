@@ -116,9 +116,7 @@ public class ArticleService {
                         Article::getTags,
                         Article::getCategories,
                         Article::getIs_top,
-                        Article::getIs_public,
                         Article::getIs_original,
-                        Article::getIs_comment,
                         Article::getIs_link,
                         Article::getIs_private,
                         Article::getSource_url)
@@ -158,6 +156,10 @@ public class ArticleService {
             // System.out.println(categoriesName);
             if (StrUtil.isNotBlank(categoriesName))
                 article.setCategories_name(JSONUtil.parseArray("[" + categoriesName + "]"));
+        }
+        if (article.getIs_private()){
+            article.setDescription("私密文章");
+            article.setImage_url(null);
         }
         return article;
     }

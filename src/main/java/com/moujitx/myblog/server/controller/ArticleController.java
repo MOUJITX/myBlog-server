@@ -82,7 +82,6 @@ public class ArticleController {
     }
 
     /* 通过ID查询单条数据 */
-    @AuthAccess
     @GetMapping("/selectById/{uuid}")
     public Result selectById(@PathVariable String uuid) {
         Article article = articleService.selectById(uuid);
@@ -120,9 +119,7 @@ public class ArticleController {
             @RequestBody Article article) {
         article.setIs_public(true);
         Page<Article> selectPage = articleService.page(article, pageNum, pageSize);
-        selectPage.getRecords().forEach(item -> {
-            item = articleService.setCategoriesAndTagsName(item);
-        });
+        selectPage.getRecords().forEach(item -> articleService.setCategoriesAndTagsName(item));
 
         Map<String, Object> result = new HashMap<>();
         result.put("list", selectPage.getRecords());
@@ -138,6 +135,27 @@ public class ArticleController {
     public Result selectByCategoryUUID(@PathVariable String fatherUUID) {
         List<Article> list = articleService.selectByCategoryUUID(fatherUUID);
         return Result.success(list);
+    }
+
+    @AuthAccess
+    @GetMapping("/{uuid}")
+    public Result articleById(@PathVariable String uuid, @RequestParam(defaultValue = "") String viewCode) {
+        Article article = articleService.selectById(uuid);
+        article = articleService.setCategoriesAndTagsName(article);
+
+        if (!article.getIs_private()) {
+            return Result.success(article);
+        }
+
+        if (viewCode.isEmpty()) {
+            return Result.success("请输入访问口令以查看私密文章。", false);
+        }
+
+        if (article.getView_code().equals(viewCode)) {
+            return Result.success(article);
+        }
+
+        return Result.success("访问口令错误！", false);
     }
 
 }
