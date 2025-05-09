@@ -68,7 +68,8 @@ public class ArticleService {
     public Article selectById(String uuid) {
         MPJLambdaWrapper<Article> wrapper = new MPJLambdaWrapper<Article>()
                 .selectAll(Article.class)
-                .eq(Article::getUuid, uuid);
+                .eq(Article::getUuid, uuid)
+                .eq(Article::getIs_public, true);
         return articleMapper.selectOne(wrapper);
     }
 

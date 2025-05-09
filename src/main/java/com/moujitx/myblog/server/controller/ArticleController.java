@@ -141,21 +141,30 @@ public class ArticleController {
     @GetMapping("/{uuid}")
     public Result articleById(@PathVariable String uuid, @RequestParam(defaultValue = "") String viewCode) {
         Article article = articleService.selectById(uuid);
-        article = articleService.setCategoriesAndTagsName(article);
 
         if (!article.getIs_private()) {
+            article = articleService.setCategoriesAndTagsName(article);
             return Result.success(article);
         }
 
         if (viewCode.isEmpty()) {
-            return Result.success("请输入访问口令以查看私密文章。", false);
-        }
-
-        if (article.getView_code().equals(viewCode)) {
+            article.setFull_content("请输入访问口令以查看私密文章");
+            article.setView_code(null);
+            article = articleService.setCategoriesAndTagsName(article);
             return Result.success(article);
         }
 
-        return Result.success("访问口令错误！", false);
+        if (article.getView_code().equals(viewCode)) {
+            article.setIs_private(false);
+            article.setView_code(null);
+            article = articleService.setCategoriesAndTagsName(article);
+            return Result.success(article);
+        }
+
+        article.setFull_content("访问口令错误");
+        article.setView_code(null);
+        article = articleService.setCategoriesAndTagsName(article);
+        return Result.success(article);
     }
 
 }
