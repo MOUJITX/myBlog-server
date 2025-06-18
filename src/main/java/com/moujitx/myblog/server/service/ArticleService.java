@@ -65,11 +65,11 @@ public class ArticleService {
     /**
      * 通过ID查询单条数据
      */
-    public Article selectById(String uuid) {
+    public Article selectById(String uuid, Boolean isPublicOnly) {
         MPJLambdaWrapper<Article> wrapper = new MPJLambdaWrapper<Article>()
                 .selectAll(Article.class)
                 .eq(Article::getUuid, uuid)
-                .eq(Article::getIs_public, true);
+                .eq(isPublicOnly, Article::getIs_public, true);
         return articleMapper.selectOne(wrapper);
     }
 
